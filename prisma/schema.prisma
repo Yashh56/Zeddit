@@ -1,0 +1,118 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String          @id @default(cuid())
+  email         String          @unique
+  username      String          @unique
+  password      String
+  Post          Post[]
+  Comment       Comment[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  Profile       Profile[]
+  UserSubZeddit UserSubZeddit[]
+  Likes         Likes[]
+}
+
+model Profile {
+  userId         String   @id
+  displayName    String   @db.Text
+  bio            String   @default("Hey There ! I am using Zeddit !!")
+  profilePicture String   @default("https://media.istockphoto.com/id/1451587807/vector/user-profile-icon-vector-avatar-or-person-icon-profile-picture-portrait-symbol-vector.jpg?s=612x612&w=0&k=20&c=yDJ4ITX1cHMh25Lt1vI1zBn2cAKKAlByHBvPJ8gEiIg=")
+  user           User     @relation(fields: [userId], references: [id])
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Subzeddit {
+  id            String          @id @default(cuid())
+  name          String          @unique
+  description   String          @db.Text
+  admin         String          @db.Text
+  adminId       String
+  icon          String          @default("https://cdn-icons-png.flaticon.com/512/615/615075.png")
+  Post          Post[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  UserSubZeddit UserSubZeddit[]
+  Comment       Comment[]
+  Likes         Likes[]
+
+  @@unique([id, name])
+}
+
+model UserSubZeddit {
+  id            String    @id @default(cuid())
+  subZedditId   String
+  subZedditName String
+  icon          String
+  userId        String
+  joinedAt      DateTime  @default(now())
+  user          User      @relation(fields: [userId], references: [id])
+  subZeddit     Subzeddit @relation(fields: [subZedditId], references: [id])
+}
+
+model Post {
+  id            String    @id @default(cuid())
+  title         String    @db.Text
+  content       String    @db.Text
+  image         String?
+  userId        String
+  subZedditId   String
+  subZedditName String
+  user          User      @relation(fields: [userId], references: [id])
+  subzeddit     Subzeddit @relation(fields: [subZedditId, subZedditName], references: [id, name])
+  Comment       Comment[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  Likes         Likes[]
+}
+
+model Comment {
+  id          String    @id @default(cuid())
+  content     String    @db.Text
+  userId      String
+  username    String
+  postId      String
+  subZedditId String
+  user        User      @relation(fields: [userId], references: [id])
+  post        Post      @relation(fields: [postId], references: [id])
+  SubZeddit   Subzeddit @relation(fields: [subZedditId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  Likes       Likes[]
+
+  @@index([userId])
+  @@index([postId])
+}
+
+model Likes {
+  id          String    @id @default(cuid())
+  userId      String
+  postId      String?
+  commentId   String?
+  subZedditId String
+  User        User      @relation(fields: [userId], references: [id])
+  Post        Post?     @relation(fields: [postId], references: [id])
+  Comment     Comment?  @relation(fields: [commentId], references: [id])
+  SubZeddit   Subzeddit @relation(fields: [subZedditId], references: [id])
+  createdAt   DateTime  @default(now())
+
+  @@unique([userId, postId])
+  @@unique([userId, commentId])
+}
