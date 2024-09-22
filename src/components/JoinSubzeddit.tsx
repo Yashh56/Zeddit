@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { useSession } from "next-auth/react";
+import { useToast } from "./ui/use-toast";
 
 interface JoinSubzedditProps {
   subZedditId: string;
@@ -21,7 +22,7 @@ const JoinSubzeddit = ({
   const { data: session } = useSession();
   const userId = session?.user.id;
   const [isJoined, setIsJoined] = useState(false);
-// console.log(userId)
+  const { toast } = useToast()
   const getJoined = async () => {
     try {
       const res = await axios.get(`/api/userSubzeddit/${subZedditId}/${userId}`);
@@ -37,7 +38,7 @@ const JoinSubzeddit = ({
     if (userId && subZedditId) {
       getJoined();
     }
-     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, subZedditId]);
 
   const join = async () => {
@@ -51,7 +52,10 @@ const JoinSubzeddit = ({
           icon,
           subZedditName: name,
         });
-
+        toast({
+          title: "SubZeddit Joined",
+          description: `You are now member of ${name} !`
+        })
         if (res.status !== 200) {
           setIsJoined(false);
           setJoined(false);

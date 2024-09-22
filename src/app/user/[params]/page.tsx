@@ -125,6 +125,7 @@ const ProfilePage = () => {
                       postUserId={post.userId}
                       subZedditId={post.subZedditId}
                       subZedditName={post.subZedditName}
+                      getPosts={getProfileData}
                     />
                   ))}
                 </div>

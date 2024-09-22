@@ -9,6 +9,8 @@ import { useDropzone } from 'react-dropzone';
 import { useEdgeStore } from '@/lib/edgestore';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
+import { useToast } from './ui/use-toast';
+import { ToastAction } from './ui/toast';
 
 interface EditProfileProps {
   username: string;
@@ -29,7 +31,7 @@ const EditProfile = ({ username, bio, profilePicture, setUsername, setBio, setPr
   const { data: session } = useSession();
   const userId = session?.user.id;
   const [isDialogOpen, setIsDialogOpen] = useState(false); // Control dialog open state
-
+  const { toast } = useToast()
   const uploadIcon = async (file: File) => {
     if (file) {
       const res = await edgestore.publicFiles.upload({
@@ -46,7 +48,7 @@ const EditProfile = ({ username, bio, profilePicture, setUsername, setBio, setPr
       uploadIcon(acceptedFiles[0]);
     }
   };
-console.log(imageUrl)
+  console.log(imageUrl)
   console.log(profilePicture)
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
@@ -64,6 +66,13 @@ console.log(imageUrl)
       setBio(bio);
       setProfilePicture(profilePicture); // Update parent profile picture state
       setIsDialogOpen(false)
+      toast({
+        title: "Profile Updation",
+        description: "Your Profile has been updated.",
+        action: (
+          <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
+        )
+      })
     } catch (error) {
       console.error('Error updating profile:', error);
     }
@@ -91,12 +100,12 @@ console.log(imageUrl)
               {isDragActive ? (
                 <p className="text-center">Drop the image here...</p>
               ) : (
-                <Image
+                <img
                   className="w-full h-full rounded-full object-cover"
                   src={profilePicture} // Use the updated picture or fallback to the original
-                height={0}
-                width={0}
-                alt=''
+                  height={0}
+                  width={0}
+                  alt=''
                 />
               )}
             </div>
@@ -108,7 +117,7 @@ console.log(imageUrl)
               onChange={(e) => setUsername(e.target.value)}
               value={username} // Bind input to newUsername state
               className="text-base border-gray-300 dark:border-gray-700"
-              // placeholder={username}
+            // placeholder={username}
             />
           </div>
           <div className="space-y-2">

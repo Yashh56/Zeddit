@@ -11,6 +11,8 @@ import { useRouter } from 'next/navigation'
 import { Textarea } from './ui/textarea'
 import { Plus } from 'lucide-react'
 import { Checkbox } from './ui/checkbox'
+import { useToast } from './ui/use-toast'
+import { ToastAction } from './ui/toast'
 
 export function CreateSubzeddit() {
     const [name, setName] = useState('')
@@ -25,6 +27,7 @@ export function CreateSubzeddit() {
     const { edgestore } = useEdgeStore()
     const router = useRouter()
     const [ready, setReady] = useState(false)
+    const { toast } = useToast()
 
     const uploadIcon = async (file: File) => {
         if (file) {
@@ -43,12 +46,16 @@ export function CreateSubzeddit() {
     }
     const create = async () => {
         try {
-            // const encodedName = encodeURIComponent(name);
-            const encodedName = name.replace("%20"," ")
+            const encodedName = name.replace("%20", " ")
             const res = await axios.post('/api/subzeddit/', { name: encodedName, description, icon: iconUploadToBackend, admin, adminId });
             router.replace(`/s/${encodedName}`);  // Use encoded name for redirection
-            console.log(encodedName)
-            console.log(res.data)
+            toast({
+                title: "SubZeddit Creation",
+                description: "Your SubZeddit has been created successfully",
+                action: (
+                    <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
+                )
+            })
         } catch (error) {
             console.log(error)
         }

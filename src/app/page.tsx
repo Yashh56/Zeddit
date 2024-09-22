@@ -33,18 +33,18 @@ const Page = () => {
   }, [status, router]);
 
 
+  const randomPosts = async () => {
+    try {
+      const res = await axios.get(`/api/randomPost`);
+      // console.log(res.data)
+      setRandomPostData(res.data);
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    const randomPosts = async () => {
-      try {
-        const res = await axios.get(`/api/randomPost`);
-        // console.log(res.data)
-        setRandomPostData(res.data);
-
-      } catch (error) {
-        console.log(error);
-      }
-    };
     randomPosts(); // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -64,10 +64,21 @@ const Page = () => {
         <div className="flex flex-1 flex-col md:flex-row">
           <SideNav />
           <main className="flex-1 p-4 md:p-6 bg-gray-100 dark:bg-[#171717] dark:text-white text-black">
-            <div className="flex flex-col items-center md:items-start space-y-6">
+            <div >
               {randomPostData.map((post, idx) => (
                 <div>
-                  <Post key={`${post.id}+${idx}`} userId={userId} title={post.title} image={post.image} postId={post.id} content={post.content} postUserId={post.userId} subZedditName={post.subZedditName} subZedditId={post.subZedditId} />
+                  <Post
+                    key={`${post.id}+${idx}`}
+                    userId={userId}
+                    title={post.title}
+                    image={post.image}
+                    postId={post.id}
+                    content={post.content}
+                    postUserId={post.userId}
+                    subZedditName={post.subZedditName}
+                    subZedditId={post.subZedditId}
+                    getPosts={randomPosts}
+                  />
                 </div>
               ))}
             </div>

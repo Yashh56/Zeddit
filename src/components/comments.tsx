@@ -7,6 +7,7 @@ import { Input } from './ui/input';
 import { LucideArrowUpWideNarrow, SendHorizonal } from 'lucide-react';
 import { Button } from './ui/button';
 import CommentLikeButton from './commentsLikes';
+import { CommentDelete } from './commentsDeletepop';
 
 interface CommentsProps {
     postId: string;
@@ -17,6 +18,7 @@ interface DataProps {
     content: string;
     username: string;
     id: string
+    userId: string
 }
 
 export default function Comments({ postId, subZedditId }: CommentsProps) {
@@ -31,13 +33,13 @@ export default function Comments({ postId, subZedditId }: CommentsProps) {
         try {
             await axios.post(`/api/comments/post/${postId}`, { userId, content: comment, username, subZedditId });
             setComment('');
-            getComment(); // Refresh comments without reloading the page
+            getComments(); // Refresh comments without reloading the page
         } catch (error) {
             console.error('Error creating comment:', error);
         }
     };
 
-    const getComment = async () => {
+    const getComments = async () => {
         try {
             const res = await axios.get(`/api/comments/post/${postId}`);
             setComments(res.data);
@@ -47,7 +49,7 @@ export default function Comments({ postId, subZedditId }: CommentsProps) {
     };
 
     useEffect(() => {
-        getComment(); // eslint-disable-next-line react-hooks/exhaustive-deps
+        getComments(); // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [postId]);
 
     return (
@@ -76,8 +78,11 @@ export default function Comments({ postId, subZedditId }: CommentsProps) {
                         <p className=" text-sm font-mono text-gray-600  text-right">{comment.username}</p>
 
                         <p className="text-lg font-mono mb-2">{comment.content}</p>
-                        <div className='text-right flex items-end justify-end'>
+                        <div className='text-right flex items-end justify-end gap-12'>
                             <CommentLikeButton userId={userId} subZedditId={subZedditId} commentId={comment.id} />
+                            {
+                            comment.userId === userId && <CommentDelete commentId={comment.id} userId={userId} getComments = {getComments} />
+                        }
                         </div>
                     </div>
                 ))}

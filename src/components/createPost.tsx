@@ -1,6 +1,3 @@
-
-
-
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import React, { useState } from 'react';
@@ -12,6 +9,8 @@ import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Plus } from 'lucide-react';
 import { useEdgeStore } from '@/lib/edgestore';
+import { useToast } from './ui/use-toast';
+import { ToastAction } from './ui/toast';
 
 interface CreatePostProps {
     subZedditId: string;
@@ -28,12 +27,20 @@ export function CreatePost({ subZedditId, name, onPostCreated }: CreatePostProps
     const [uploadProgress, setUploadProgress] = useState<number>(0);
     const { edgestore } = useEdgeStore();
     const [open, setOpen] = useState(false);
+    const { toast } = useToast()
 
     const createPost = async () => {
         try {
             const res = await axios.post(`/api/post/${subZedditId}`, { title, content, image: imageUrl, userId, subZedditName: name });
             console.log(res.data);
             setOpen(false);
+            toast({
+                title: "Post has been created",
+                description: "Your post has been created successfully",
+                action: (
+                    <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
+                )
+            })
             onPostCreated(); // Call the callback to refresh posts
         } catch (error) {
             console.log(error);

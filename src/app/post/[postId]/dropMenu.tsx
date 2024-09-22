@@ -51,7 +51,7 @@ export function DropMenu({ title, content, image, postId, getPost, setEdit }: Dr
             <DropdownMenuContent className="w-56 flex justify-start p-4 bg-[#171717] gap-2">
                 <div className='flex-col gap-2 p-4'>
                     <div>
-                        <DeletePost postId={postId} imageUrl={image} text={"Delete"} />
+                        <DeletePost postId={postId} imageUrl={image} text={"Delete"} getPosts={() => { }} />
                     </div>
                     <Separator className='text-white bg-white' />
                     <div onClick={handleEditClick} className="cursor-pointer flex gap-2 mt-2 font-semibold text-xl">

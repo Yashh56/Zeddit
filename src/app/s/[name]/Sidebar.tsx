@@ -1,11 +1,13 @@
 "use client";
 
+import { DeleteSubzeddit } from '@/components/subzedditDeletePop';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import axios from 'axios';
 import { Pencil, XIcon } from 'lucide-react';
 import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 
 interface SidebarProps {
@@ -13,6 +15,7 @@ interface SidebarProps {
   admin: string;
   subZedditId: string;
   adminId: string;
+  imageUrl: string
 }
 
 interface SubzedditsProps {
@@ -20,7 +23,7 @@ interface SubzedditsProps {
   icon: string;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ description, admin, subZedditId, adminId }) => {
+const Sidebar: React.FC<SidebarProps> = ({ description, admin, subZedditId, adminId, imageUrl }) => {
   const [subzeddits, setSubZeddits] = useState<SubzedditsProps[]>([]);
   const [edit, setEdit] = useState(false);
   const [newDescription, setNewDescription] = useState(description); // Initially set to prop description
@@ -116,10 +119,15 @@ const Sidebar: React.FC<SidebarProps> = ({ description, admin, subZedditId, admi
               <Avatar>
                 <AvatarImage src={sub.icon} alt={sub.name} />
               </Avatar>
-              <h1 className="text-blue-500 hover:underline">{sub.name}</h1>
+              <Link href={`/s/${sub.name}`} className="text-blue-500 hover:underline">{sub.name}</Link>
             </div>
           ))}
         </div>
+        {adminId === userId && (
+          <div className="mt-2 ml-6">
+            <DeleteSubzeddit subZedditId={subZedditId} imageUrl={imageUrl} />
+          </div>
+        )}
       </div>
     </aside>
   );

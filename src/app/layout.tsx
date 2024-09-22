@@ -4,6 +4,7 @@ import AuthProvider from "@/context/AuthProvider";
 import { ThemeProvider } from "@/components/theme-provider";
 import Navbar from "@/components/Navbar";
 import { EdgeStoreProvider } from "@/lib/edgestore";
+import { Toaster } from "@/components/ui/toaster";
 
 
 export const metadata: Metadata = {
@@ -23,6 +24,7 @@ export default function RootLayout({
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
             <EdgeStoreProvider>
               {children}
+              <Toaster/>
             </EdgeStoreProvider>
           </ThemeProvider>
         </body>

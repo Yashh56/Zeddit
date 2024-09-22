@@ -2,6 +2,8 @@
   // "extends": "next/core-web-vitals",
   "extends": "next",
   "rules": {
-    "react/jsx-key": [1, { "checkFragmentShorthand": true }]
+    "react/jsx-key": [1, { "checkFragmentShorthand": true }],
+    "@next/next/no-img-element": "off",
+    "react/no-unescaped-entities": 0
   }
 }

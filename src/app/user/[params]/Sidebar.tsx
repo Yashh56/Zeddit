@@ -49,7 +49,7 @@ const Sidebar = ({ userId, username, bio, profilePicture, setUsername, setBio, s
             </div>
 
             <div className="flex-col">
-              <h1 className="text-xl font-mono">Total SubZeddit</h1>
+              <h1 className="text-xl font-mono">Total SubZeddits</h1>
               <p className="text-xl font-mono text-center">{totalJoinedSubZeddits}</p>
             </div>
           </div>

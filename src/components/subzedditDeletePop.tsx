@@ -1,3 +1,4 @@
+"use client"
 import {
     AlertDialog,
     AlertDialogAction,
@@ -13,6 +14,10 @@ import { useEdgeStore } from "@/lib/edgestore"
 import axios from "axios"
 import { Trash2 } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { Button } from "./ui/button"
+import { Input } from "./ui/input"
+import { useState } from "react"
+import { Label } from "./ui/label"
 
 interface DeleteSubzeddit {
     subZedditId: string
@@ -23,7 +28,7 @@ export function DeleteSubzeddit({ subZedditId, imageUrl }: DeleteSubzeddit) {
 
     const router = useRouter()
     const { edgestore } = useEdgeStore()
-
+    const [check, setCheck] = useState('')
     const deleteSubZeddit = async () => {
         try {
             const res = await axios.delete(`/api/subzeddit/id/${subZedditId}`)
@@ -41,7 +46,7 @@ export function DeleteSubzeddit({ subZedditId, imageUrl }: DeleteSubzeddit) {
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
-                <Trash2 />
+                <Button variant={'destructive'}> Delete SubZeddit</Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
@@ -51,9 +56,18 @@ export function DeleteSubzeddit({ subZedditId, imageUrl }: DeleteSubzeddit) {
                         Subzeddit and remove your data from our servers.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
+                <Label className="text-sm">
+                    For Deleting your Subzeddit write "CONFIRM"
+                </Label>
+                <Input
+                    value={check}
+                    required
+                    onChange={(e) => setCheck(e.target.value)}
+                />
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={deleteSubZeddit}>Delete</AlertDialogAction>
+                    <Button variant={check === "CONFIRM" ? 'destructive' : 'ghost'} onClick={check === "CONFIRM" ? deleteSubZeddit : () => { }
+                    }>Delete</Button>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

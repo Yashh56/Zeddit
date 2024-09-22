@@ -9,9 +9,7 @@ import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { CreatePost } from '@/components/createPost';
 import JoinSubzeddit from '@/components/JoinSubzeddit';
 import { useSession } from 'next-auth/react';
-import { DeleteSubzeddit } from './subzedditDeletePop';
 import Post from '@/components/Post';
-import Navbar from '@/components/Navbar';
 
 interface PostsProps {
     title: string;
@@ -68,7 +66,7 @@ const SubredditPage = () => {
 
     useEffect(() => {
         getPosts();
-         // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [subZedditId]);
     const handlePostCreated = async () => {
         await getPosts();
@@ -87,11 +85,7 @@ const SubredditPage = () => {
                         <h1 className="text-2xl md:text-3xl font-bold">s/{name}</h1>
                         <JoinSubzeddit subZedditId={subZedditId} adminId={adminId} icon={icon} setJoined={setJoined} name={name} />
                         {joined && <CreatePost subZedditId={subZedditId} name={name} onPostCreated={handlePostCreated} />}
-                        {adminId === userId && (
-                            <div className="mt-2 ml-6">
-                                <DeleteSubzeddit subZedditId={subZedditId} imageUrl={icon} />
-                            </div>
-                        )}
+                       
                     </div>
 
                     <div className="mt-4">
@@ -105,6 +99,7 @@ const SubredditPage = () => {
                                 content={post.content}
                                 image={post.image}
                                 subZedditName={name}
+                                getPosts={getPosts}
                             />
                         ))}
                     </div>
@@ -114,6 +109,7 @@ const SubredditPage = () => {
                     admin={admin}
                     adminId={adminId}
                     subZedditId={subZedditId}
+                    imageUrl = {icon}
                 />
             </div>
         </div>

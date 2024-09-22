@@ -27,8 +27,22 @@ export async function DELETE(
         subZedditId: params.id,
       },
     });
+
+    const findComments = await db.comment.findMany({
+      where: {
+        subZedditId: params.id,
+      },
+    });
+
     if (findLikes) {
       await db.likes.deleteMany({
+        where: {
+          subZedditId: params.id,
+        },
+      });
+    }
+    if (findComments) {
+      await db.comment.deleteMany({
         where: {
           subZedditId: params.id,
         },
@@ -47,7 +61,7 @@ export async function DELETE(
         subZedditId: params.id,
       },
     });
-    const deleteSubzeddit = await db.subzeddit.delete({
+    await db.subzeddit.delete({
       where: {
         id: params.id,
       },

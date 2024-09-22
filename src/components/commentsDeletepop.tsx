@@ -1,3 +1,5 @@
+"use client"
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,45 +18,34 @@ import { useState } from "react"
 import { ToastAction } from "./ui/toast"
 import { useToast } from "./ui/use-toast"
 
-interface DeletePostParams {
-  postId: string
-  imageUrl: string
-  text?: string
-  getPosts: () => void;
+interface DeleteCommentProps {
+  commentId: String
+  userId: string
+  getComments: () => {}
 }
 
-export function DeletePost({ postId, imageUrl, text, getPosts }: DeletePostParams) {
-  const { edgestore } = useEdgeStore()
+export function CommentDelete({ commentId, userId, getComments }: DeleteCommentProps) {
   const [open, setOpen] = useState(false)
   const { toast } = useToast()
-  const deletePost = async () => {
+  const deleteComment = async () => {
     try {
-      const res = await axios.delete(`/api/post/post/${postId}`)
-      if (imageUrl.length > 0) {
-        await edgestore.publicFiles.delete({
-          url: imageUrl
-        })
-      }
+      const res = await axios.delete(`/api/comments/${commentId}/${userId}`)
       console.log(res.data)
       setOpen(false)
       toast({
-        title: "Post deletion",
-        description: "Your post has been deleted successfully",
-        action: (
-          <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
-        )
+        title: "Comment Deletion",
+        description: "Your Comment has been deleted"
       })
-      await getPosts();
+      await getComments();
     } catch (error) {
-      console.log(error)
+
     }
   }
-
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
         <div onClick={() => setOpen(true)} className="text-xl  flex  gap-2 font-semibold cursor-pointer">
-          <Trash /> {text}
+          <Trash />
           {/* <Trash2 className="cursor-pointer" /> */}
         </div>
       </AlertDialogTrigger>
@@ -67,7 +58,7 @@ export function DeletePost({ postId, imageUrl, text, getPosts }: DeletePostParam
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel onClick={() => setOpen(false)}>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={deletePost}>Delete</AlertDialogAction>
+          <AlertDialogAction onClick={deleteComment}>Delete</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
