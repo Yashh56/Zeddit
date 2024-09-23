@@ -7,8 +7,8 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Post from '@/components/Post';
-import Image from 'next/image';
-
+import Loader from '@/components/loader';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface DataProps {
   title: string;
@@ -25,22 +25,26 @@ const Page = () => {
   const [randomPostData, setRandomPostData] = useState<DataProps[]>([]);
   const router = useRouter();
   const userId = session?.user.id
+  const [loader, setLoader] = useState(false)
 
   useEffect(() => {
     if (status === 'unauthenticated') {
-      router.replace('/sign-up');
+      router.replace('/landing');
     } // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, router]);
 
 
   const randomPosts = async () => {
     try {
+      setLoader(true)
       const res = await axios.get(`/api/randomPost`);
       // console.log(res.data)
       setRandomPostData(res.data);
 
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoader(false)
     }
   };
 
@@ -50,8 +54,8 @@ const Page = () => {
 
   if (status === 'loading') {
     return (
-      <div className="h-[100vh] mt-10 flex items-center justify-center">
-        <Image src='https://i.gifer.com/ZKZg.gif' className='h-12 w-12' height={12} width={12} alt='' />
+      <div>
+        <Loader />
       </div>
     );
   }
@@ -64,23 +68,36 @@ const Page = () => {
         <div className="flex flex-1 flex-col md:flex-row">
           <SideNav />
           <main className="flex-1 p-4 md:p-6 bg-gray-100 dark:bg-[#171717] dark:text-white text-black">
-            <div >
-              {randomPostData.map((post, idx) => (
-                <div>
-                  <Post
-                    key={`${post.id}+${idx}`}
-                    userId={userId}
-                    title={post.title}
-                    image={post.image}
-                    postId={post.id}
-                    content={post.content}
-                    postUserId={post.userId}
-                    subZedditName={post.subZedditName}
-                    subZedditId={post.subZedditId}
-                    getPosts={randomPosts}
-                  />
-                </div>
-              ))}
+            <div>
+              {
+                loader ? <div className="flex gap-3 w-full h-full justify-center items-center space-y-3">
+                  <div className=' flex flex-col gap-4'>
+                    <Skeleton className="h-4 w-[200px]" />
+                    <Skeleton className="h-[325px] w-[450px] rounded-xl" />
+
+                  </div>
+                  <div className="space-y-2 mt-12">
+                    <Skeleton className="h-4 w-[550px]" />
+                    <Skeleton className="h-4 w-[550px]" />
+                    <Skeleton className="h-4 w-[550px]" />
+                    <Skeleton className="h-4 w-[550px]" />
+                  </div>
+                </div> :
+                  randomPostData.map((post, idx) => (
+                    <Post
+                      key={`${post.id}+${idx}`}
+                      userId={userId}
+                      title={post.title}
+                      image={post.image}
+                      postId={post.id}
+                      content={post.content}
+                      postUserId={post.userId}
+                      subZedditName={post.subZedditName}
+                      subZedditId={post.subZedditId}
+                      getPosts={randomPosts}
+                    />
+                  )
+                  )}
             </div>
           </main>
         </div>

@@ -86,9 +86,9 @@ const EditProfile = ({ username, bio, profilePicture, setUsername, setBio, setPr
       <DialogContent className="dark:bg-[#171717] bg-white sm:max-w-[425px] p-6 rounded-lg">
         <CardHeader>
           <CardTitle className="text-lg font-semibold">Edit Your Profile 🌻</CardTitle>
-          <CardDescription className="text-sm text-gray-500 dark:text-gray-400">
-            A Community or subzeddit where members can join and enjoy.
-          </CardDescription>
+          {/* <CardDescription className="text-sm text-gray-500 dark:text-gray-400">
+           Edit your profile.
+          </CardDescription> */}
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex flex-col items-center gap-4">

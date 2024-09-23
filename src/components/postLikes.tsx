@@ -79,7 +79,7 @@ function PostLikeButton({ postId, subZedditId, userId }: VoteProps) {
         <FaHeart
           onClick={!hasLiked ? createLike : deleteLike}
           size={24}
-          className={hasLiked ? 'text-red-500' : 'text-white'}
+          className={hasLiked ? 'text-red-500' : 'dark:text-white'}
         />
         <p className=''>{totalLikes}</p>
       </div>

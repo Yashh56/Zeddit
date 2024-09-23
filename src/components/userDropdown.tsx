@@ -50,10 +50,10 @@ export function UserDropdown({ displayPicture }: userDropdownProps) {
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                     <Github className="mr-2 h-4 w-4" />
-                    <Link href={`https://github.com/Yashh56/Zeddit`}>GitHub</Link>
+                    <Link target='_blank' href={`https://github.com/Yashh56/Zeddit`}>GitHub</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                <ThemeToggle/>
+                    <ThemeToggle />
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

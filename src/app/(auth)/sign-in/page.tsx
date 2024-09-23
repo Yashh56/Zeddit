@@ -5,13 +5,15 @@ import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { Input } from '@/components/ui/input'
 import Link from 'next/link'
+import { useToast } from '@/components/ui/use-toast'
+import { ToastAction } from '@/components/ui/toast'
 
 const LoginPage = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const router = useRouter()
   const { data: session, status } = useSession()
-
+  const { toast } = useToast()
   useEffect(() => {
     if (status === 'authenticated') {
       router.replace('/')
@@ -28,6 +30,13 @@ const LoginPage = () => {
 
     if (result?.ok) {
       router.push('/')
+      toast({
+        title: "Auth Successful",
+        description: "User has been logged in successfully.",
+        action: (
+          <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
+        )
+      })
     } else {
       console.error('Failed to login')
     }

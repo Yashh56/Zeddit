@@ -5,6 +5,7 @@ import { Avatar, AvatarImage } from './ui/avatar';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { UserDropdown } from './userDropdown';
+import { Skeleton } from './ui/skeleton';
 
 interface searchResultProps {
   name: string;
@@ -17,13 +18,18 @@ export default function Navbar() {
   const userId = session?.user.id;
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResult, setSearchResult] = useState<searchResultProps[]>([]);
+  const [loader, setLoader] = useState(false)
 
   const getDisplayPic = async () => {
     try {
+      setLoader(true)
       const res = await axios.get(`/api/profile/${userId}`);
       setDisplayPicture(res.data.uniqueProfile.profilePicture);
     } catch (error) {
       console.error('Error fetching profile picture:', error);
+    }
+    finally {
+      setLoader(false)
     }
   };
 
@@ -104,7 +110,11 @@ export default function Navbar() {
       </div>
 
       {/* User Profile Dropdown */}
-      <UserDropdown displayPicture={displayPicture} />
+      {
+        loader ? <Skeleton className="h-12 w-12 rounded-full" />
+          : <UserDropdown displayPicture={displayPicture} />
+
+      }
     </header>
   );
 }

@@ -3,12 +3,15 @@ import Comments from '@/components/comments';
 import Navbar from '@/components/Navbar';
 import SideNav from '@/components/sideNav';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import axios from 'axios';
-import { ArrowUpWideNarrow, Cross, Pencil, XIcon } from 'lucide-react';
+import { XIcon } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useParams, useRouter } from 'next/navigation'
 import React, { useEffect, useState, useRef } from 'react'
+import { Separator } from '@radix-ui/react-separator';
+import Image from 'next/image';
+import { DropMenu } from './dropMenu';
+import Loader from '@/components/loader';
 
 interface DataProps {
     title: string;
@@ -19,16 +22,6 @@ interface DataProps {
 
 
 
-
-import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Separator } from '@radix-ui/react-separator';
-import Image from 'next/image';
-import { DropMenu } from './dropMenu';
 
 
 
@@ -51,7 +44,7 @@ function PostPage() {
 
     useEffect(() => {
         if (status === 'unauthenticated') {
-            router.replace('/sign-up');
+            router.replace('/landing');
         } // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [status, router]);
 
@@ -97,9 +90,7 @@ function PostPage() {
 
     if (status === 'loading') {
         return (
-            <div className="h-screen flex items-center justify-center bg-gray-100">
-                <Image src='https://i.gifer.com/ZKZg.gif' height={12} width={12} className='h-12 w-12 animate-spin' alt="Loading..." />
-            </div>
+           <Loader/>
         );
     }
 
@@ -113,7 +104,6 @@ function PostPage() {
                     <div className="flex flex-col items-center text-center">
                         <div className='flex gap-8 m-2 justify-start items-start text-start'>
                             <h1 className='text-3xl text-left font-bold'>{title}</h1>
-                            <DropdownMenu />
                             {!edit && (
                                 <DropMenu
                                     postId={postId}
