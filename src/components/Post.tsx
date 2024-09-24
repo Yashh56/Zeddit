@@ -7,6 +7,7 @@ import JoinSubzeddit from "./JoinSubzeddit";
 import PostLikeButton from "./postLikes";
 import { useToast } from "./ui/use-toast";
 import { Button } from "./ui/button";
+import { ShieldAlert } from "lucide-react";
 
 interface PostProps {
   title: string;
@@ -18,6 +19,7 @@ interface PostProps {
   userId: string;
   subZedditName: string;
   getPosts: () => void;
+  NSFW: boolean;
 }
 
 const Post: React.FC<PostProps> = ({
@@ -30,13 +32,13 @@ const Post: React.FC<PostProps> = ({
   userId,
   subZedditName,
   getPosts,
+  NSFW
 }) => {
   const [isJoined, setIsJoined] = useState(false);
   const [adminId, setAdminId] = useState("");
   const [icon, setIcon] = useState("");
   const [name, setName] = useState("");
   const { toast } = useToast();
-
   const getDataOfSubzeddit = async () => {
     try {
       const res = await axios.get(`/api/subzeddit/id/${subZedditId}`);
@@ -77,7 +79,7 @@ const Post: React.FC<PostProps> = ({
           <Link href={`/s/${subZedditName}`} className="text-sm font-mono hover:underline">
             s/{subZedditName}
           </Link>
-          <h2 className="text-xl md:text-2xl font-bold">{title}</h2>
+          <h2 className="text-xl md:text-2xl font-bold flex gap-3 text-center items-center">{NSFW === true ? <><ShieldAlert size={23} className="text-red-500" /> {title}</> : title}</h2>
         </div>
         {userId === postUserId && (
           <div className="mt-1 ml-6">
@@ -90,13 +92,12 @@ const Post: React.FC<PostProps> = ({
       </div>
 
       <Link href={`/post/${postId}`} className="flex flex-col md:flex-row gap-4 mb-4">
-        <div className="w-full md:w-1/2 h-48">
+        {image.length > 0 && <div className="w-full md:w-1/2 h-48">
           <img
-            alt={icon || ""}
-            className="w-full h-full object-cover rounded-lg shadow-md"
+            className={`w-full h-full object-cover rounded-lg shadow-md ${NSFW && 'blur-md'}`}
             src={image}
           />
-        </div>
+        </div>}
         <div className="flex-1">
           <p className="text-md md:text-lg font-mono text-gray-700 dark:text-gray-200 leading-relaxed">
             {content.length > 250 ? `${content.slice(0, 250)}...` : content}

@@ -76,6 +76,7 @@ model Post {
   userId        String
   subZedditId   String
   subZedditName String
+  NSFW          Boolean   @default(false)
   user          User      @relation(fields: [userId], references: [id])
   subzeddit     Subzeddit @relation(fields: [subZedditId, subZedditName], references: [id, name])
   Comment       Comment[]

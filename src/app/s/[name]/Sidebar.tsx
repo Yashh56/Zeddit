@@ -30,7 +30,6 @@ const Sidebar: React.FC<SidebarProps> = ({ description, admin, subZedditId, admi
   const { data: session } = useSession();
   const userId = session?.user.id;
   const [open, setOpen] = useState(false);
-  console.log(subZedditId)
   const allSubreddits = async () => {
     try {
       const res = await axios.get(`/api/subzeddit/suggestions/${userId}/${subZedditId}`);

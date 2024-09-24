@@ -66,7 +66,7 @@ export function CreateSubzeddit() {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant='ghost'> <Plus /> </Button>
+                <Plus size={24}/>
                 {/* <Plus/> */}
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px] dark:bg-[#171717] ">

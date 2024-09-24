@@ -19,6 +19,7 @@ interface PostsProps {
     image: string;
     id: string;
     userId: string;
+    NSFW: boolean
 }
 
 const SubredditPage = () => {
@@ -93,7 +94,7 @@ const SubredditPage = () => {
             <div className="flex flex-col min-h-fit dark:bg-[#171717]">
                 {/* <Navbar /> */}
                 <div className="flex flex-1 mt-12 flex-col md:flex-row">
-                    <SideNav />
+                    <SideNav onPostCreated={getPosts} />
                     <main className="lg:w-3/4 w-full p-4 dark:text-slate-300 bg-white dark:bg-[#171717] bg-opacity-90 rounded-lg shadow-lg">
                         <div className="flex items-center gap-2 max-md:justify-evenly flex-wrap">
                             <Avatar>
@@ -128,6 +129,7 @@ const SubredditPage = () => {
                                             image={post.image}
                                             subZedditName={name}
                                             getPosts={getPosts}
+                                            NSFW={post.NSFW}
                                         />
                                     ))
                             }

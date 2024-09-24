@@ -14,7 +14,7 @@ export async function POST(
     return Response.json(AuthErrorResponse);
   }
   try {
-    const { title, content, image, userId, subZedditName } = await req.json();
+    const { title, content, image, userId, subZedditName, NSFW } = await req.json();
 
     const findUser = await db.user.findUnique({
       where: {
@@ -34,6 +34,7 @@ export async function POST(
         image,
         subZedditId: params.subzedditId,
         subZedditName,
+        NSFW,
       },
     });
     return Response.json(newPost);

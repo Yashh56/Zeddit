@@ -1,18 +1,18 @@
 "use client";
-import React, { useState, useEffect } from 'react';
-import Sidebar from './Sidebar';
-import axios from 'axios';
-import Navbar from '@/components/Navbar';
-import SideNav from '@/components/sideNav';
-import { Avatar, AvatarImage } from '@/components/ui/avatar';
-import { Separator } from '@/components/ui/separator';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import Post from '@/components/Post';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import Comments from '@/components/comments';
-import Loader from '@/components/loader';
-import { Skeleton } from '@/components/ui/skeleton';
+import React, { useState, useEffect } from "react";
+import Sidebar from "./Sidebar";
+import axios from "axios";
+import Navbar from "@/components/Navbar";
+import SideNav from "@/components/sideNav";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Post from "@/components/Post";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import Comments from "@/components/comments";
+import Loader from "@/components/loader";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface PostProps {
   title: string;
@@ -22,6 +22,7 @@ interface PostProps {
   subZedditName: string;
   userId: string;
   id: string;
+  NSFW: boolean;
 }
 
 interface CommentsProps {
@@ -32,46 +33,46 @@ interface CommentsProps {
 }
 
 const ProfilePage = () => {
-  const [username, setUsername] = useState('');
-  const [bio, setBio] = useState('');
-  const [profilePicture, setProfilePicture] = useState('');
+  const [username, setUsername] = useState("");
+  const [bio, setBio] = useState("");
+  const [profilePicture, setProfilePicture] = useState("");
   const { data: session, status } = useSession();
   const userId = session?.user.id;
   const [postData, setPostData] = useState<PostProps[]>([]);
   const [commentData, setCommentData] = useState<CommentsProps[]>([]);
   const router = useRouter();
-  const [load, setLoad] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const getProfileData = async () => {
     try {
-      setLoad(true);
+      setLoading(true);
       const res = await axios.get(`/api/profile/${userId}`);
       const profile = res.data.uniqueProfile;
       setUsername(profile.displayName);
-      setPostData(res.data.allPostsByUser);
-      setCommentData(res.data.allCommentsByUser);
       setBio(profile.bio);
       setProfilePicture(profile.profilePicture);
+      setPostData(res.data.allPostsByUser);
+      setCommentData(res.data.allCommentsByUser);
     } catch (error) {
-      console.error('Error fetching profile:', error);
+      console.error("Error fetching profile:", error);
     } finally {
-      setLoad(false);
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     if (userId) {
       getProfileData();
-    } // eslint-disable-next-line react-hooks/exhaustive-deps
+    }
   }, [userId]);
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.replace('/landing');
-    } // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (status === "unauthenticated") {
+      router.replace("/landing");
+    }
   }, [status, router]);
 
-  if (status === 'loading') {
+  if (status === "loading") {
     return <Loader />;
   }
 
@@ -80,7 +81,7 @@ const ProfilePage = () => {
       <Navbar />
       <Separator className="bg-white" />
       <div className="flex flex-1 flex-col md:flex-row">
-        <SideNav />
+        <SideNav onPostCreated={getProfileData} />
         <main className="flex-1 p-6 bg-white dark:bg-[#202020] dark:text-white rounded-lg shadow-lg">
           <div className="flex flex-col items-center">
             {/* Profile Header Section */}
@@ -107,52 +108,42 @@ const ProfilePage = () => {
               </TabsList>
 
               {/* Posts Tab Content */}
-              <TabsContent value="posts" className="flex flex-col items-center space-y-4 w-full">
-                <div className="w-full">
-                  {load ? (
-                    <div className="flex gap-3 w-full h-full justify-center items-center space-y-3">
-                      <div className="flex flex-col gap-4">
-                        <Skeleton className="h-4 w-[200px]" />
-                        <Skeleton className="h-[325px] w-[450px] rounded-xl" />
-                      </div>
-                      <div className="space-y-2 mt-12">
-                        <Skeleton className="h-4 w-[550px]" />
-                        <Skeleton className="h-4 w-[550px]" />
-                        <Skeleton className="h-4 w-[550px]" />
-                        <Skeleton className="h-4 w-[550px]" />
-                      </div>
+              <TabsContent value="posts" className="w-full">
+                {loading ? (
+                  <div className="flex flex-col items-center gap-6">
+                    {/* Skeleton Loader */}
+                    <Skeleton className="h-8 w-48 mb-4" />
+                    <Skeleton className="h-64 w-full md:w-3/4 rounded-lg" />
+                    <Skeleton className="h-64 w-full md:w-3/4 rounded-lg" />
+                  </div>
+                ) : postData.length > 0 ? (
+                  postData.map((post, idx) => (
+                    <div key={idx} className="w-full">
+                      <Post
+                        image={post.image}
+                        postId={post.id}
+                        userId={userId}
+                        content={post.content}
+                        title={post.title}
+                        postUserId={post.userId}
+                        subZedditId={post.subZedditId}
+                        subZedditName={post.subZedditName}
+                        getPosts={getProfileData}
+                        NSFW={post.NSFW}
+                      />
                     </div>
-                  ) : (
-                    <div className="w-full space-y-4">
-                      {postData.map((post, idx) => (
-                        <div key={idx} className="w-full">
-                          <Post
-                            image={post.image}
-                            postId={post.id}
-                            userId={userId}
-                            content={post.content}
-                            title={post.title}
-                            postUserId={post.userId}
-                            subZedditId={post.subZedditId}
-                            subZedditName={post.subZedditName}
-                            getPosts={getProfileData}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                  ))
+                ) : (
+                  <div className="text-center mt-4 text-lg">No Posts Found</div>
+                )}
               </TabsContent>
 
               {/* Comments Tab Content */}
               <TabsContent value="comments">
-                <div className="flex w-full flex-col items-center space-y-4">
+                <div className="w-full">
                   {commentData.length > 0 ? (
                     commentData.map((comment, idx) => (
-                      <div
-                        key={idx}
-                        className="w-full gap-2 p-4 bg-gray-100 dark:bg-[#171717] border border-gray-300 dark:border-gray-700 rounded-lg shadow-sm"
-                      >
+                      <div key={idx} className="w-full p-4 bg-gray-100 dark:bg-[#171717] border border-gray-300 dark:border-gray-700 rounded-lg shadow-sm">
                         <h3 className="text-lg font-semibold mb-2">{comment.content}</h3>
                         <p className="text-sm text-gray-500 dark:text-gray-400">
                           Posted by {comment.username} on {new Date(comment.createdAt).toLocaleDateString()}
@@ -160,7 +151,7 @@ const ProfilePage = () => {
                       </div>
                     ))
                   ) : (
-                    <div>No Comments</div>
+                    <div className="text-center mt-4 text-lg">No Comments Found</div>
                   )}
                 </div>
               </TabsContent>

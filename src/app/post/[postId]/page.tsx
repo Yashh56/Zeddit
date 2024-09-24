@@ -99,7 +99,7 @@ function PostPage() {
             <Navbar />
             <Separator className="bg-white" />
             <div className="flex flex-1 flex-col md:flex-row">
-                <SideNav />
+                <SideNav onPostCreated={()=>{}} />
                 <main className="w-full lg:w-3/4 p-6 bg-white dark:bg-[#171717] rounded-lg shadow-md">
                     <div className="flex flex-col items-center text-center">
                         <div className='flex gap-8 m-2 justify-start items-start text-start'>
