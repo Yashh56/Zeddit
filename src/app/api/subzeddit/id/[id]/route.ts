@@ -122,7 +122,13 @@ export async function GET(
         id: params.id,
       },
     });
-    return Response.json(getSubZeddit);
+
+    const getSuggestions = await db.subzeddit.findMany({
+      where: {
+        id: { not: params.id },
+      },
+    });
+    return Response.json({ getSubZeddit:getSubZeddit, getSuggestions:getSuggestions });
   } catch (error) {
     console.log(error);
     return Response.json(InternalErrorResponse);

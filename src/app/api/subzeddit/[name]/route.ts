@@ -21,9 +21,9 @@ export async function GET(
         name: params.name,
       },
     });
-    // if(!findByName){
-    //   return Response.json(Res({title:"Subzeddit not found !!",status:404}))
-    // }
+
+    
+
     return Response.json(findByName);
   } catch (error) {
     console.log(error);

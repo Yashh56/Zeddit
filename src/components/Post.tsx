@@ -42,9 +42,10 @@ const Post: React.FC<PostProps> = ({
   const getDataOfSubzeddit = async () => {
     try {
       const res = await axios.get(`/api/subzeddit/id/${subZedditId}`);
-      setAdminId(res.data.adminId);
-      setIcon(res.data.icon);
-      setName(res.data.name);
+      const response = res.data.getSubZeddit
+      setAdminId(response.adminId);
+      setIcon(response.icon);
+      setName(response.name);
     } catch (error) {
       console.log(error);
     }

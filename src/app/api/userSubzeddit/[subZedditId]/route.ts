@@ -70,32 +70,3 @@ export async function DELETE(
     return Response.json(InternalErrorResponse);
   }
 }
-
-export async function GET(
-  req: Request,
-  { params }: { params: { subZedditId: string } }
-) {
-  const session = await getServerSession(authOptions);
-  const user: User = session?.user;
-
-  if (!session || !user) {
-    return Response.json(AuthErrorResponse);
-  }
-  try {
-    const { userId } = await req.json();
-
-    const checkIfJoined = await db.userSubZeddit.findFirst({
-      where: {
-        subZedditId: params.subZedditId,
-        userId,
-      },
-    });
-    if (!checkIfJoined) {
-      return Response.json(false);
-    }
-    return Response.json(true);
-  } catch (error) {
-    console.log(error);
-    return Response.json(InternalErrorResponse);
-  }
-}

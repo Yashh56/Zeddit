@@ -92,7 +92,7 @@ const JoinSubzeddit = ({
           {adminId === userId ? 'Joined' : 'Leave'}
         </Button>
       ) : (
-        <Button onClick={adminId !== userId ? join : () => { }} className="w-20" >Join</Button>
+        <Button onClick={adminId !== userId ? join : () => { }} variant={'ghost'} className="w-20" >Join</Button>
       )}
     </div>
   );

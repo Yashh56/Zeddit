@@ -32,9 +32,8 @@ const Sidebar: React.FC<SidebarProps> = ({ description, admin, subZedditId, admi
   const [open, setOpen] = useState(false);
   const allSubreddits = async () => {
     try {
-      const res = await axios.get(`/api/subzeddit/suggestions/${userId}/${subZedditId}`);
-      // console.log(res.data)
-      setSubZeddits(res.data);
+      const res = await axios.get(`/api/subzeddit/id/${subZedditId}`);
+      setSubZeddits(res.data.getSuggestions);
     } catch (error) {
       console.log(error);
     }
