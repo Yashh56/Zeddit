@@ -20,12 +20,6 @@ interface DataProps {
     createdAt: string;
 }
 
-
-
-
-
-
-
 function PostPage() {
     const params = useParams<({ postId: string })>();
     const [data, setData] = useState<DataProps | null>(null);
@@ -34,12 +28,10 @@ function PostPage() {
     const [image, setImage] = useState('');
     const { data: session, status } = useSession();
     const router = useRouter();
-    const userId = session?.user.id;
     const [postId, setPostId] = useState<string>('');
     const [subZedditId, setSubZedditId] = useState('')
     const [edit, setEdit] = useState(false)
-
-    // Create a ref for the textarea
+    console.log(params.postId)
     const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
     useEffect(() => {

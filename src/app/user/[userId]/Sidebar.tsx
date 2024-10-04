@@ -3,6 +3,7 @@ import { Separator } from '../../../components/ui/separator';
 import EditProfile from '../../../components/editProfile';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 
 interface SidebarProps {
   userId: string;
@@ -18,7 +19,8 @@ const Sidebar = ({ userId, username, bio, profilePicture, setUsername, setBio, s
   const [totalVotes, setTotalVotes] = useState<number | undefined>();
   const [totalJoinedSubZeddits, setTotalJoinedSubZeddits] = useState<number | undefined>();
   const [joinedDate, setJoinedDate] = useState<string>('');
-  // console.log(username)
+  const { data: session } = useSession()
+  const loggedInUserId = session?.user.id
   const userData = async () => {
     try {
       const res = await axios.get(`/api/profile/${userId}`);
@@ -58,16 +60,20 @@ const Sidebar = ({ userId, username, bio, profilePicture, setUsername, setBio, s
         <div className="flex-col mt-3 justify-center items-center">
           <div className="flex gap-4 items-center justify-center">
             {/* Pass props to EditProfile component */}
-            <EditProfile
-              username={username}
-              bio={bio}
-              profilePicture={profilePicture}
-              setUsername={setUsername}
-              setBio={setBio}
-              setProfilePicture={setProfilePicture}
-            />
-            {/* // Todo */}
-            <Button variant={'destructive'}>Delete an Account</Button>
+            {
+              userId === loggedInUserId && <>
+                <EditProfile
+                  username={username}
+                  bio={bio}
+                  profilePicture={profilePicture}
+                  setUsername={setUsername}
+                  setBio={setBio}
+                  setProfilePicture={setProfilePicture}
+                />
+                {/* // Todo */}
+                <Button variant={'destructive'}>Delete an Account</Button>
+              </>
+            }
           </div>
         </div>
         <div>

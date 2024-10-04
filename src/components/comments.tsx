@@ -1,13 +1,13 @@
 "use client";
-
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { Input } from './ui/input';
-import { LucideArrowUpWideNarrow, SendHorizonal } from 'lucide-react';
+import { SendHorizonal } from 'lucide-react';
 import { Button } from './ui/button';
 import CommentLikeButton from './commentsLikes';
 import { CommentDelete } from './commentsDeletepop';
+import Link from 'next/link';
 
 interface CommentsProps {
     postId: string;
@@ -73,16 +73,14 @@ export default function Comments({ postId, subZedditId }: CommentsProps) {
                 {comments.map((comment, idx) => (
                     <div
                         key={idx}
-                        className="p-4 bg-white  dark:bg-[#3d3b3b] dark:text-white border rounded-lg border-gray-300 dark:border-gray-700 shadow-sm"
-                    >
-                        <p className=" text-sm font-mono text-gray-600  text-right">{comment.username}</p>
-
+                        className="p-4 bg-white  dark:bg-[#3d3b3b] dark:text-white border rounded-lg border-gray-300 dark:border-gray-700 shadow-sm">
+                        <p className=" text-sm font-mono text-gray-600  text-right hover:underline"><Link href={`/user/${comment.userId}`}>{comment.username}</Link></p>
                         <p className="text-lg font-mono mb-2">{comment.content}</p>
                         <div className='text-right flex items-end justify-end gap-12'>
                             <CommentLikeButton userId={userId} subZedditId={subZedditId} commentId={comment.id} />
                             {
-                            comment.userId === userId && <CommentDelete commentId={comment.id} userId={userId} getComments = {getComments} />
-                        }
+                                comment.userId === userId && <CommentDelete commentId={comment.id} userId={userId} getComments={getComments} />
+                            }
                         </div>
                     </div>
                 ))}

@@ -9,7 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Post from "@/components/Post";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Comments from "@/components/comments";
 import Loader from "@/components/loader";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -33,11 +33,12 @@ interface CommentsProps {
 }
 
 const ProfilePage = () => {
+  const params = useParams<({ userId: string })>();
   const [username, setUsername] = useState("");
   const [bio, setBio] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
+  const userId = params.userId;
   const { data: session, status } = useSession();
-  const userId = session?.user.id;
   const [postData, setPostData] = useState<PostProps[]>([]);
   const [commentData, setCommentData] = useState<CommentsProps[]>([]);
   const router = useRouter();
